@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/engrzulqarnain-mcp-server-s3-download-files-badge.png)](https://mseep.ai/app/engrzulqarnain-mcp-server-s3-download-files)
+
 ## Model Context Protocol (MCP) Server for AWS S3
 
 This repository provides an implementation of a Model Context Protocol (MCP) server for AWS S3, enabling AI models, particularly Large Language Models (LLMs), to securely interact with S3 buckets. The server offers a standardized interface to list S3 buckets, list objects within buckets, and download file contents. It facilitates seamless integration between AI applications and AWS S3 storage for efficient data retrieval and management.
