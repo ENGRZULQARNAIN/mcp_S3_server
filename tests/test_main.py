@@ -1,6 +1,5 @@
 """Tests for the main module."""
 
-import pytest
 from mcp_s3_server.main import main
 
 
