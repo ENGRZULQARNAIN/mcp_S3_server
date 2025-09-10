@@ -1,13 +1,14 @@
-name: Auto Version Bump (DEPRECATED)
+# DISABLED - Manual version bumping instead
+# name: Auto Version Bump (DEPRECATED)
 
-on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - 'pyproject.toml'
-      - '.github/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
+# on:
+#   push:
+#     branches: [main]
+#     paths-ignore:
+#       - 'pyproject.toml'
+#       - '.github/**'
+#       - 'README.md'
+#       - 'CHANGELOG.md'
 
 jobs:
   version-bump:
