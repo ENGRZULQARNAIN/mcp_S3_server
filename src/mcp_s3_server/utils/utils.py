@@ -1,5 +1,5 @@
 import aioboto3
-from src.mcp_s3_server.config import S3Config
+from mcp_s3_server.config import S3Config
 
 # Global S3 config
 s3_config = S3Config.from_environment()

@@ -14,8 +14,8 @@ except ImportError as e:
     logger.error(f"Import failed: {e}")
     sys.exit(1)
 
-from src.mcp_s3_server.config import S3Config
-from src.mcp_s3_server.utils.utils import get_s3_session
+from mcp_s3_server.config import S3Config
+from mcp_s3_server.utils.utils import get_s3_session
 
 async def list_buckets_tool(s3_config: S3Config) -> List[types.TextContent]:
     try:

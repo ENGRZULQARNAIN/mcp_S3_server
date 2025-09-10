@@ -36,7 +36,7 @@ Repository = "https://github.com/ENGRZULQARNAIN/mcp_server_s3_download_files"
 Issues = "https://github.com/ENGRZULQARNAIN/mcp_server_s3_download_files/issues"
 
 [project.scripts]
-mcp-s3-server = "mcp_s3_server.main:main"
+mcp-s3-server = "mcp_s3_server.server_main:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mcp_s3_server"]
