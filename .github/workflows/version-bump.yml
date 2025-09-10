@@ -1,4 +1,4 @@
-name: Auto Version Bump
+name: Auto Version Bump (DEPRECATED)
 
 on:
   push:
@@ -51,8 +51,13 @@ jobs:
         fi
     
     - name: Bump version
+      id: bump-version
       run: |
         uv run bump2version ${{ steps.bump-type.outputs.type }} --verbose
+        # Get the new version from pyproject.toml
+        NEW_VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+        echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+        echo "New version: $NEW_VERSION"
     
     - name: Push changes
       run: |
@@ -63,7 +68,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.bump-version.outputs.new_version }}
-        release_name: Release ${{ steps.bump-version.outputs.new_version }}
+        tag_name: v${{ steps.bump-version.outputs.new_version }}
+        release_name: Release v${{ steps.bump-version.outputs.new_version }}
         draft: false
         prerelease: false
