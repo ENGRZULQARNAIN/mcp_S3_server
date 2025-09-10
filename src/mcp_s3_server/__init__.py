@@ -4,6 +4,5 @@ __version__ = "0.1.1"
 __author__ = "ZULQARNAIN"
 __email__ = "zulqar4791@gmail.com"
 
-from .main import main
-
-__all__ = ["main"]
+# main module was removed; export package metadata only
+__all__ = ["__version__", "__author__", "__email__"]
