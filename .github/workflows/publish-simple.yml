@@ -84,6 +84,9 @@ jobs:
       with:
         repository-url: https://test.pypi.org/legacy/
         print-hash: true
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
   publish-pypi:
     needs: build
@@ -104,3 +107,6 @@ jobs:
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         print-hash: true
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
