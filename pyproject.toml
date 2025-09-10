@@ -25,6 +25,7 @@ classifiers = [
 ]
 dependencies = [
     "aioboto3>=15.1.0",
+    "anyio>=4.10.0",
     "mcp>=1.13.1",
     "python-dotenv>=1.1.1",
 ]
@@ -35,7 +36,7 @@ Repository = "https://github.com/ENGRZULQARNAIN/mcp_server_s3_download_files"
 Issues = "https://github.com/ENGRZULQARNAIN/mcp_server_s3_download_files/issues"
 
 [project.scripts]
-mcp-s3-server = "mcp_s3_server.main:main"
+mcp-s3-server = "mcp_s3_server.server_main:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mcp_s3_server"]
