@@ -2,6 +2,18 @@
 
 This guide shows how to configure and connect the MCP S3 Server with clients using environment variables.
 
+## Installation
+
+Install the MCP S3 Server using uv:
+
+```bash
+# Install globally
+uv tool install mcp-s3-server
+
+# Or run directly without installing
+uvx mcp-s3-server
+```
+
 ## Environment Variables
 
 ### AWS Configuration
@@ -16,16 +28,9 @@ export AWS_DEFAULT_REGION="us-east-1"
 
 # Optional: For temporary credentials (STS)
 export AWS_SESSION_TOKEN="your_session_token_here"
-```
 
-### Server Configuration (Optional)
-
-```bash
-# Maximum objects to return per request (default: 1000)
-export MCP_S3_MAX_OBJECTS=1000
-
-# Maximum file size in MB for downloads (default: 100)
-export MCP_S3_MAX_FILE_SIZE_MB=100
+# Optional: For S3-compatible services (DigitalOcean Spaces, IBM Cloud, etc.)
+export S3_ENDPOINT_URL="https://nyc3.digitaloceanspaces.com"
 ```
 
 ## Client Configuration Examples
@@ -38,13 +43,13 @@ Add this to your Claude Desktop config file (`claude_desktop_config.json`):
 {
   "mcpServers": {
     "mcp-s3-server": {
-      "command": "uv",
-      "args": ["run", "mcp-s3-server"],
-      "cwd": "/path/to/mcp_s3_server",
+      "command": "uvx",
+      "args": ["mcp-s3-server"],
       "env": {
         "AWS_ACCESS_KEY_ID": "your_access_key_here",
         "AWS_SECRET_ACCESS_KEY": "your_secret_access_key_here",
-        "AWS_DEFAULT_REGION": "us-east-1"
+        "AWS_DEFAULT_REGION": "us-east-1",
+        "S3_ENDPOINT_URL": "https://nyc3.digitaloceanspaces.com"
       }
     }
   }
@@ -55,8 +60,6 @@ Add this to your Claude Desktop config file (`claude_desktop_config.json`):
 
 ```python
 import asyncio
-import subprocess
-import json
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
@@ -65,12 +68,13 @@ async def main():
     env = {
         "AWS_ACCESS_KEY_ID": "your_access_key_here",
         "AWS_SECRET_ACCESS_KEY": "your_secret_access_key_here", 
-        "AWS_DEFAULT_REGION": "us-east-1"
+        "AWS_DEFAULT_REGION": "us-east-1",
+        "S3_ENDPOINT_URL": "https://nyc3.digitaloceanspaces.com"
     }
     
     server_params = StdioServerParameters(
-        command="uv",
-        args=["run", "mcp-s3-server"],
+        command="uvx",
+        args=["mcp-s3-server"],
         env=env
     )
     
@@ -89,59 +93,6 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-```
-
-### 3. Shell Script Example
-
-Create a script to run the server with environment variables:
-
-```bash
-#!/bin/bash
-# run_mcp_s3_server.sh
-
-# Set AWS credentials
-export AWS_ACCESS_KEY_ID="your_access_key_here"
-export AWS_SECRET_ACCESS_KEY="your_secret_access_key_here"
-export AWS_DEFAULT_REGION="us-east-1"
-
-# Optional server configuration
-export MCP_S3_MAX_OBJECTS=1000
-export MCP_S3_MAX_FILE_SIZE_MB=100
-
-# Run the server
-cd /path/to/mcp_s3_server
-uv run mcp-s3-server
-```
-
-### 4. Docker Configuration
-
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-COPY . .
-
-# Install dependencies
-RUN pip install uv
-RUN uv sync
-
-# Set environment variables
-ENV AWS_ACCESS_KEY_ID=""
-ENV AWS_SECRET_ACCESS_KEY=""
-ENV AWS_DEFAULT_REGION="us-east-1"
-ENV MCP_S3_MAX_OBJECTS=1000
-ENV MCP_S3_MAX_FILE_SIZE_MB=100
-
-# Run the server
-CMD ["uv", "run", "mcp-s3-server"]
-```
-
-Run with:
-```bash
-docker run -e AWS_ACCESS_KEY_ID="your_key" \
-           -e AWS_SECRET_ACCESS_KEY="your_secret" \
-           -e AWS_DEFAULT_REGION="us-east-1" \
-           mcp-s3-server
 ```
 
 ## AWS Credentials Priority
@@ -164,9 +115,10 @@ The server will attempt to find AWS credentials in this order:
 export AWS_ACCESS_KEY_ID="your_access_key_here"
 export AWS_SECRET_ACCESS_KEY="your_secret_access_key_here"
 export AWS_DEFAULT_REGION="us-east-1"
+export S3_ENDPOINT_URL="https://nyc3.digitaloceanspaces.com"
 
 # Run the server (it will wait for client connection)
-uv run mcp-s3-server
+uvx mcp-s3-server
 ```
 
 ### 2. Test with MCP Inspector
@@ -176,7 +128,7 @@ uv run mcp-s3-server
 npm install -g @modelcontextprotocol/inspector
 
 # Test the server
-mcp-inspector uv run mcp-s3-server
+mcp-inspector uvx mcp-s3-server
 ```
 
 ### 3. Verify AWS Access
@@ -243,9 +195,8 @@ except Exception as e:
 Enable debug logging:
 
 ```bash
-export PYTHONPATH=.
 export LOG_LEVEL=DEBUG
-uv run mcp-s3-server
+uvx mcp-s3-server
 ```
 
 ## Available Tools
