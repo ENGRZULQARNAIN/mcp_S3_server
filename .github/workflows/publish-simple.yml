@@ -79,11 +79,11 @@ jobs:
         name: dist
         path: dist/
     
+    - name: Install twine
+      run: pip install twine
+    
     - name: Publish to TestPyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-url: https://test.pypi.org/legacy/
-        print-hash: true
+      run: twine upload --repository-url https://test.pypi.org/legacy/ dist/*
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
@@ -103,10 +103,11 @@ jobs:
         name: dist
         path: dist/
     
+    - name: Install twine
+      run: pip install twine
+    
     - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        print-hash: true
+      run: twine upload dist/*
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
