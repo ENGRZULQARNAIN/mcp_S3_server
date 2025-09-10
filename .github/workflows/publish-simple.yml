@@ -68,6 +68,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      id-token: write
+      contents: read
     
     steps:
     - name: Download build artifacts
@@ -86,6 +89,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
+    permissions:
+      id-token: write
+      contents: read
     
     steps:
     - name: Download build artifacts
