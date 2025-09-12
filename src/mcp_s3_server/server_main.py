@@ -28,6 +28,7 @@ except ImportError as e:
     sys.exit(1)
 
 from mcp_s3_server.tools.list_buckets_tool import list_buckets_tool
+from mcp_s3_server.tools.list_object_tool import list_objects_tool
 from mcp_s3_server.config import S3Config
 
 
@@ -54,6 +55,36 @@ async def list_tools() -> List[types.Tool]:
             ),
             inputSchema={"type": "object", "properties": {}, "required": []},
         ),
+        types.Tool(
+            name="list_s3_objects",
+            description=(
+                "List objects in a specific S3 bucket with optional prefix filtering. "
+                "Supports AWS S3, DigitalOcean Spaces, IBM Cloud Object Storage, and other "
+                "S3-compatible services."
+            ),
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "bucket_name": {
+                        "type": "string",
+                        "description": "Name of the S3 bucket to list objects from"
+                    },
+                    "prefix": {
+                        "type": "string",
+                        "description": "Optional prefix to filter objects (e.g., 'folder/subfolder/')",
+                        "default": ""
+                    },
+                    "max_keys": {
+                        "type": "integer",
+                        "description": "Maximum number of objects to return (default: 100, max: 1000)",
+                        "default": 100,
+                        "minimum": 1,
+                        "maximum": 1000
+                    }
+                },
+                "required": ["bucket_name"]
+            },
+        ),
     ]
 
 
@@ -78,12 +109,27 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[types.TextCont
 
     if name == "list_s3_buckets":
         return await list_buckets_tool(s3_config)
+    
+    if name == "list_s3_objects":
+        bucket_name = arguments.get("bucket_name")
+        if not bucket_name:
+            return [
+                types.TextContent(
+                    type="text",
+                    text="❌ Missing required parameter: bucket_name\n\nPlease provide the name of the bucket to list objects from."
+                )
+            ]
+        
+        prefix = arguments.get("prefix", "")
+        max_keys = arguments.get("max_keys", 100)
+        
+        return await list_objects_tool(s3_config, bucket_name, prefix, max_keys)
 
     return [
         types.TextContent(
             type="text",
             text=(
-                "❌ Unknown tool: {name}\n\nAvailable tools: test_connection, list_s3_buckets"
+                "❌ Unknown tool: {name}\n\nAvailable tools: test_connection, list_s3_buckets, list_s3_objects"
             ).format(name=name),
         )
     ]

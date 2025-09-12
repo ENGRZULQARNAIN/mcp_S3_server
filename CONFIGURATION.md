@@ -203,6 +203,27 @@ uvx mcp-s3-server
 
 The server currently provides:
 
+- **test_connection**: Test MCP S3 server connection
 - **list_s3_buckets**: Lists all accessible S3 buckets with creation dates
+- **list_s3_objects**: Lists objects in a specific S3 bucket with optional prefix filtering
+
+### Tool Parameters
+
+#### list_s3_objects
+- **bucket_name** (required): Name of the S3 bucket to list objects from
+- **prefix** (optional): Prefix to filter objects (e.g., 'folder/subfolder/')
+- **max_keys** (optional): Maximum number of objects to return (default: 100, max: 1000)
+
+Example usage:
+```json
+{
+  "tool": "list_s3_objects",
+  "parameters": {
+    "bucket_name": "my-bucket",
+    "prefix": "documents/",
+    "max_keys": 50
+  }
+}
+```
 
 Additional tools can be easily added to the server architecture.
