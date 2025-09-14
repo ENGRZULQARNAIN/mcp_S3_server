@@ -8,6 +8,7 @@ A Model Context Protocol (MCP) server for S3-compatible storage services. Enable
 
 - **List S3 Buckets**: Retrieve all accessible buckets with creation dates
 - **List Objects**: Browse objects in specific buckets with prefix filtering
+- **Download Files**: Download files from S3 storage directly to local Downloads folder
 - **Multi-Provider Support**: Works with AWS S3, DigitalOcean Spaces, IBM Cloud, MinIO, Wasabi, Backblaze B2
 - **Secure Integration**: Standardized interface for AI models to access cloud storage
 - **Prefix Filtering**: Navigate folder-like structures with prefix parameters
@@ -124,6 +125,36 @@ List objects in a specific S3 bucket with optional filtering.
     "bucket_name": "my-bucket",
     "prefix": "documents/",
     "max_keys": 50
+  }
+}
+```
+
+### 4. download_s3_file
+Download a file from S3 storage to the local Downloads folder.
+
+**Parameters:**
+- `bucket_name` (required): Name of the S3 bucket containing the file
+- `object_key` (required): Key/path of the object in the bucket (e.g., "folder/file.pdf")
+- `local_filename` (optional): Custom filename for the downloaded file (defaults to object key basename)
+
+**Examples:**
+```json
+// Download a file with default filename
+{
+  "tool": "download_s3_file",
+  "parameters": {
+    "bucket_name": "my-bucket",
+    "object_key": "documents/report.pdf"
+  }
+}
+
+// Download a file with custom filename
+{
+  "tool": "download_s3_file",
+  "parameters": {
+    "bucket_name": "my-bucket",
+    "object_key": "documents/report.pdf",
+    "local_filename": "monthly_report.pdf"
   }
 }
 ```
@@ -304,9 +335,11 @@ uvx mcp-s3-server
 ## 🎯 Use Cases
 
 - **Data Analysis**: Access and analyze data stored in S3 buckets for AI-driven applications
-- **Document Retrieval**: Retrieve specific files (e.g., PDFs) for processing by AI models
+- **Document Retrieval**: Retrieve and download specific files (e.g., PDFs) for processing by AI models
+- **File Management**: Download files from cloud storage directly to local machine for offline access
 - **Automation**: Automate S3 bucket management tasks via natural language queries with LLMs
 - **AI Development**: Support development of AI models requiring access to external data sources
+- **Content Distribution**: Download files from cloud storage for local processing or distribution
 
 ## 🤝 Contributing
 
