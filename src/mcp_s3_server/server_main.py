@@ -29,6 +29,7 @@ except ImportError as e:
 
 from mcp_s3_server.tools.list_buckets_tool import list_buckets_tool
 from mcp_s3_server.tools.list_object_tool import list_objects_tool
+from mcp_s3_server.tools.download_file_tool import download_file_tool
 from mcp_s3_server.config import S3Config
 
 
@@ -85,6 +86,32 @@ async def list_tools() -> List[types.Tool]:
                 "required": ["bucket_name"]
             },
         ),
+        types.Tool(
+            name="download_s3_file",
+            description=(
+                "Download a file from S3 storage to the local Downloads folder. "
+                "Supports AWS S3, DigitalOcean Spaces, IBM Cloud Object Storage, and other "
+                "S3-compatible services."
+            ),
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "bucket_name": {
+                        "type": "string",
+                        "description": "Name of the S3 bucket containing the file"
+                    },
+                    "object_key": {
+                        "type": "string",
+                        "description": "Key/path of the object in the bucket (e.g., 'folder/file.pdf')"
+                    },
+                    "local_filename": {
+                        "type": "string",
+                        "description": "Optional custom filename for the downloaded file (defaults to object key basename)"
+                    }
+                },
+                "required": ["bucket_name", "object_key"]
+            },
+        ),
     ]
 
 
@@ -124,12 +151,36 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[types.TextCont
         max_keys = arguments.get("max_keys", 100)
         
         return await list_objects_tool(s3_config, bucket_name, prefix, max_keys)
+    
+    if name == "download_s3_file":
+        bucket_name = arguments.get("bucket_name")
+        object_key = arguments.get("object_key")
+        
+        if not bucket_name:
+            return [
+                types.TextContent(
+                    type="text",
+                    text="❌ Missing required parameter: bucket_name\n\nPlease provide the name of the bucket containing the file."
+                )
+            ]
+        
+        if not object_key:
+            return [
+                types.TextContent(
+                    type="text",
+                    text="❌ Missing required parameter: object_key\n\nPlease provide the key/path of the object in the bucket."
+                )
+            ]
+        
+        local_filename = arguments.get("local_filename")
+        
+        return await download_file_tool(s3_config, bucket_name, object_key, local_filename)
 
     return [
         types.TextContent(
             type="text",
             text=(
-                "❌ Unknown tool: {name}\n\nAvailable tools: test_connection, list_s3_buckets, list_s3_objects"
+                "❌ Unknown tool: {name}\n\nAvailable tools: test_connection, list_s3_buckets, list_s3_objects, download_s3_file"
             ).format(name=name),
         )
     ]
